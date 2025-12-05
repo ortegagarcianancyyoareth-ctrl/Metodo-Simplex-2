@@ -3,8 +3,8 @@ import java.util.Scanner;
 public class MetodoSimplex {
     public static void main(String[] args) {
         Scanner lector = new Scanner(System.in);
-        int n, m,  filas, columnas, iteraciones, maximoIteraciones, columnaPivote;
-        double menor;
+        int n, m,  filas, columnas, iteraciones, maximoIteraciones, columnaPivote, filaPivote;
+        double menor, menorRazon, pivote, razon, valor, factor;
         System.out.print("Ingresa el numero de variables: ");
         n = lector.nextInt();
         System.out.print("Ingresa el numero de restricciones: ");
@@ -54,3 +54,41 @@ public class MetodoSimplex {
                     columnaPivote = j;
                 }
             }
+            if (columnaPivote == -1) {
+                System.out.println("Solucion optima encontrada en " + iteraciones + " iteraciones");
+                break;
+            }
+            System.out.println("Iteración " + iteraciones);
+            System.out.println("Columna pivote: columna " + (columnaPivote + 1));
+            filaPivote = -1;
+            menorRazon = Double.MAX_VALUE;
+            for (int i = 0; i < m; i++) {
+                valor = tabla[i][columnaPivote];
+                if (valor > 0) {
+                    razon = tabla[i][columnas - 1] / valor;
+                    if (razon < menorRazon) {
+                        menorRazon = razon;
+                        filaPivote = i;
+                    }
+                }
+            }
+            if (filaPivote == -1) {
+                System.out.println("Solución infinita");
+                return;
+            }
+            System.out.println("Fila pivote: fila " + (filaPivote + 1));
+            pivote = tabla[filaPivote][columnaPivote];
+            for (int j = 0; j < columnas; j++) {
+                tabla[filaPivote][j] /= pivote;
+            }
+            for (int i = 0; i <= m; i++) {
+                if (i != filaPivote) {
+                    factor = tabla[i][columnaPivote];
+                    for (int j = 0; j < columnas; j++) {
+                        tabla[i][j] -= factor * tabla[filaPivote][j];
+                    }
+                }
+            }
+            System.out.println("Segunda tabla:");
+            imprimirTabla(tabla, n, m);
+        }

@@ -4,7 +4,7 @@ public class MetodoSimplex {
     public static void main(String[] args) {
         Scanner lector = new Scanner(System.in);
         int n, m,  filas, columnas, iteraciones, maximoIteraciones, columnaPivote, filaPivote, filaBasica;
-        double menor, menorRazon, pivote, razon, valor, factor;
+        double menor, menorRazon, pivote, razon, valor, factor, zOptima;
         boolean variableBasica;
 
         System.out.println("Ingresa el numero de variables: ");
@@ -114,3 +114,11 @@ public class MetodoSimplex {
                 solucion[j] = tabla[filaBasica][columnas - 1];
             }
         }
+        zOptima = tabla[m][columnas - 1];
+        System.out.println("RESULTADO:");
+        for (int i = 0; i < n; i++) {
+            System.out.println("X" + (i+1) + " : " + String.format("%.3f", solucion[i]));
+        }
+        System.out.println("Z: " + String.format("%.3f", zOptima));
+    }
+}

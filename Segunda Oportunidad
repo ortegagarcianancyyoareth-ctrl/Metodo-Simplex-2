@@ -3,11 +3,13 @@ import java.util.Scanner;
 public class MetodoSimplex {
     public static void main(String[] args) {
         Scanner lector = new Scanner(System.in);
-        int n, m,  filas, columnas, iteraciones, maximoIteraciones, columnaPivote, filaPivote;
+        int n, m,  filas, columnas, iteraciones, maximoIteraciones, columnaPivote, filaPivote, filaBasica;
         double menor, menorRazon, pivote, razon, valor, factor;
-        System.out.print("Ingresa el numero de variables: ");
+        boolean variableBasica;
+
+        System.out.println("Ingresa el numero de variables: ");
         n = lector.nextInt();
-        System.out.print("Ingresa el numero de restricciones: ");
+        System.out.println("Ingresa el numero de restricciones: ");
         m = lector.nextInt();
         System.out.println("Ingresa los coeficientes de la función objetivo:");
         double[] c = new double[n];
@@ -21,10 +23,10 @@ public class MetodoSimplex {
         for (int i = 0; i < m; i++) {
             System.out.println("Restricción " + (i+1) + ":");
             for (int j = 0; j < n; j++) {
-                System.out.print("Coeficiente de X" + (j+1) + ": ");
+                System.out.println("Coeficiente de X" + (j+1) + ": ");
                 A[i][j] = lector.nextDouble();
             }
-            System.out.print("Ingresa el limite: ");
+            System.out.println("Ingresa el limite: ");
             b[i] = lector.nextDouble();
         }
         filas = m + 1;
@@ -40,8 +42,6 @@ public class MetodoSimplex {
         for (int j = 0; j < n; j++) {
             tabla[m][j] = -c[j];
         }
-        System.out.println("Primera tabla:");
-        imprimirTabla(tabla, n, m);
         iteraciones = 0;
         maximoIteraciones = 100;
         while (iteraciones < maximoIteraciones) {
@@ -89,6 +89,28 @@ public class MetodoSimplex {
                     }
                 }
             }
-            System.out.println("Segunda tabla:");
-            imprimirTabla(tabla, n, m);
+        }
+        double[] solucion = new double[n];
+        columnas = tabla[0].length;
+        for (int j = 0; j < n; j++) {
+            variableBasica = true;
+            filaBasica = -1;
+            for (int i = 0; i < m; i++) {
+                if (Math.abs(tabla[i][j] - 1.0) < 1e-6) {
+                    filaBasica = i;
+                } else if (Math.abs(tabla[i][j]) > 1e-6) {
+                    variableBasica = false;
+                }
+            }
+            if (variableBasica && filaBasica != -1) {
+                for (int i = 0; i <= m; i++) {
+                    if (i != filaBasica && Math.abs(tabla[i][j]) > 1e-6) {
+                        variableBasica = false;
+                        break;
+                    }
+                }
+            }
+            if (variableBasica && filaBasica != -1) {
+                solucion[j] = tabla[filaBasica][columnas - 1];
+            }
         }

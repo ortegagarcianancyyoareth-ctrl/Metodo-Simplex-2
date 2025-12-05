@@ -3,7 +3,8 @@ import java.util.Scanner;
 public class MetodoSimplex {
     public static void main(String[] args) {
         Scanner lector = new Scanner(System.in);
-        int n, m;
+        int n, m,  filas, columnas, iteraciones, maximoIteraciones, columnaPivote;
+        double menor;
         System.out.print("Ingresa el numero de variables: ");
         n = lector.nextInt();
         System.out.print("Ingresa el numero de restricciones: ");
@@ -26,3 +27,30 @@ public class MetodoSimplex {
             System.out.print("Ingresa el limite: ");
             b[i] = lector.nextDouble();
         }
+        filas = m + 1;
+        columnas = n + m + 1;
+        double[][] tabla = new double[filas][columnas];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                tabla[i][j] = A[i][j];
+            }
+            tabla[i][n + i] = 1.0;           
+            tabla[i][columnas - 1] = b[i];      
+        }
+        for (int j = 0; j < n; j++) {
+            tabla[m][j] = -c[j];
+        }
+        System.out.println("Primera tabla:");
+        imprimirTabla(tabla, n, m);
+        iteraciones = 0;
+        maximoIteraciones = 100;
+        while (iteraciones < maximoIteraciones) {
+            iteraciones++;
+            columnaPivote = -1;
+            menor = 0.0;
+            for (int j = 0; j < columnas - 1; j++) {
+                if (tabla[m][j] < menor) {
+                    menor = tabla[m][j];
+                    columnaPivote = j;
+                }
+            }
